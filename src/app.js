@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express = require('express');
+const cors = require('cors');
 const productsRouter = require('./routes/productsRouter');
 const cartsRouter = require('./routes/cartsRouter');
 const initiateDb = require('./utils/initiateDb');
@@ -8,6 +9,12 @@ const requestLogger = require('./utils/requestLogger');
 const app = express();
 const port = process.env.PORT ?? 8080;
 
+const corsOptions = {
+  origin: 'http://localhost:3000', // voy a usar esta api para las entregas de coderhouse-react
+  optionsSuccessStatus: 200, // esto es para que responda con status 200 en caso de que todo salga bien
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use('/api/products', requestLogger, productsRouter);
 app.use('/api/carts', requestLogger, cartsRouter);
