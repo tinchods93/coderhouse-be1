@@ -62,10 +62,12 @@ const updateItem = async (payload) => {
   }
 
   const actualDbItem = db[item.id];
+  const updatedItem = { ...actualDbItem, ...item };
   // actualizamos el item
-  db[item.id] = { ...actualDbItem, ...item };
+  db[item.id] = updatedItem;
 
   writeDb(dbName, db);
+  return updatedItem;
 };
 
 const deleteItem = async (payload) => {

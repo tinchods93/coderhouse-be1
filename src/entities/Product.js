@@ -75,8 +75,18 @@ class Product {
   }
 
   static async update(product) {
-    await dbService.updateItem({ item: product, dbName: 'products' });
-    return product;
+    if (product.price && product.price < 0)
+      throw new Error('El precio no puede ser negativo');
+    if (product.stock && product.stock < 0)
+      throw new Error('El stock no puede ser negativo');
+    if (product.status && !['active', 'paused'].includes(product.status))
+      throw new Error('El estado debe ser active o paused');
+
+    const updatedProduct = await dbService.updateItem({
+      item: product,
+      dbName: 'products',
+    });
+    return updatedProduct;
   }
 
   static delete(id) {
