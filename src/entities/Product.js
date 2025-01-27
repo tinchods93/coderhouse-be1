@@ -73,12 +73,32 @@ class Product {
     return product;
   }
 
-  static getAll() {
-    return dbService.getItems('products');
+  static async getAll(query) {
+    const products = await dbService.getItems('products');
+    if (!products?.length) {
+      throw new Error('No hay productos cargados');
+    }
+
+    // Si query tiene algo, filtramos los productos
+    if (query && Object.keys(query).length) {
+      return products.filter((product) => {
+        return Object.keys(query).every((key) => {
+          return product[key] === query[key];
+        });
+      });
+    }
+
+    return products;
   }
 
   static getById(id) {
-    return dbService.getItem({ id, dbName: 'products' });
+    const product = dbService.getItem({ id, dbName: 'products' });
+
+    if (!product) {
+      throw new Error('No se encontró el producto');
+    }
+
+    return product;
   }
 
   static async update(product) {
