@@ -30,7 +30,14 @@ class Product {
     this.code = code; // opcional - string
     this.status = status?.toLowerCase() || 'active'; // string
     this.category = category?.toLowerCase() || 'sin_categoria'; // string
-    this.thumbnails = thumbnails || thumbnailsPlaceholder; // opcional - string - deberia ser una url
+
+    if (thumbnails && !Array.isArray(thumbnails))
+      throw new Error('Las thumbnails deben ser un array');
+
+    this.thumbnails = thumbnails || [
+      thumbnailsPlaceholder,
+      thumbnailsPlaceholder,
+    ]; // opcional - [string] - deberia ser una url
 
     // Validamos que el stock sea un número y que no sea negativo
     if (isNaN(stock)) throw new Error('El stock debe ser un número');
@@ -75,18 +82,8 @@ class Product {
   }
 
   static async update(product) {
-    if (product.price && product.price < 0)
-      throw new Error('El precio no puede ser negativo');
-    if (product.stock && product.stock < 0)
-      throw new Error('El stock no puede ser negativo');
-    if (product.status && !['active', 'paused'].includes(product.status))
-      throw new Error('El estado debe ser active o paused');
-
-    const updatedProduct = await dbService.updateItem({
-      item: product,
-      dbName: 'products',
-    });
-    return updatedProduct;
+    await dbService.updateItem({ item: product, dbName: 'products' });
+    return product;
   }
 
   static delete(id) {
