@@ -1,33 +1,17 @@
-require('dotenv').config();
-const express = require('express');
-const cors = require('cors');
-const productsRouter = require('./routes/productsRouter');
-const cartsRouter = require('./routes/cartsRouter');
-const initiateDb = require('./utils/initiateDb');
-const requestLogger = require('./utils/requestLogger');
+const { Server } = require('socket.io');
+const httpServer = require('./services/httpServer');
+const Product = require('./entities/Product');
 
-const app = express();
-const port = process.env.PORT ?? 8080;
+const websocketServer = new Server(httpServer);
 
-const corsOptions = {
-  origin: 'http://localhost:3000', // voy a usar esta api para las entregas de coderhouse-react
-  optionsSuccessStatus: 200, // esto es para que responda con status 200 en caso de que todo salga bien
-};
+websocketServer.on('connection', async (socket) => {
+  console.log('Un cliente se conectó');
 
-app.use(cors(corsOptions));
-app.use(express.json());
-app.use('/api/products', requestLogger, productsRouter);
-app.use('/api/carts', requestLogger, cartsRouter);
+  socket.emit('products', await Product.getAll());
 
-// con esto levantamos el servidor
-// en http://localhost:8080
-app.listen(port, () => {
-  console.log(`** Servidor iniciado en el puerto ${port} **`);
-  console.log(`** Dominio: http://localhost:${port} **`);
-
-  // validamos si existe el path y los archivos de la base de datos
-  // si no existen, los creamos
-  initiateDb();
+  socket.on('deleteProduct', async (productId) => {
+    await Product.delete(productId);
+    websocketServer.emit('products', await Product.getAll());
+    websocketServer.emit('productDeleted');
+  });
 });
-
-module.exports = app;

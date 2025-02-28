@@ -1,9 +1,14 @@
-const crypto = require('crypto');
-const dbService = require('../services/dbService');
+const { randomUUID } = require('crypto');
+const {
+  createItem,
+  getItem,
+  updateItem,
+  deleteItem,
+} = require('../services/dbService.js');
 
 class Cart {
   constructor({ id, products }) {
-    this.id = id ?? crypto.randomUUID();
+    this.id = id ?? randomUUID();
     this.products =
       products?.map((p) => ({ id: p.id, quantity: p.quantity || 1 })) ?? [];
   }
@@ -19,21 +24,21 @@ class Cart {
   static async create(itemParams) {
     const cart = new Cart(itemParams).get();
 
-    await dbService.createItem({ item: cart, dbName: 'carts' });
+    await createItem({ item: cart, dbName: 'carts' });
     return cart;
   }
 
   static async get({ id }) {
-    return dbService.getItem({ id, dbName: 'carts' });
+    return getItem({ id, dbName: 'carts' });
   }
 
   static async update(cart) {
-    await dbService.updateItem({ item: cart, dbName: 'carts' });
+    await updateItem({ item: cart, dbName: 'carts' });
     return cart;
   }
 
   static async delete({ id }) {
-    await dbService.deleteItem({ id, dbName: 'carts' });
+    await deleteItem({ id, dbName: 'carts' });
   }
 
   // manejo de productos en el carrito

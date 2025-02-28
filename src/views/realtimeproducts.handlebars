@@ -1,0 +1,16 @@
+<form
+  method='post'
+  id='restock-products'
+  action='/api/products/restock'
+  style='display: none'
+>
+  <button class='floating-button' type='submit'>Reponer productos</button>
+</form>
+<div class='products-grid' id='products'>
+  <h1>Cargando Productos...</h1>
+</div>
+<script src='/socket.io/socket.io.js'></script>
+<script
+  src='https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.min.js'
+></script>
+<script src='/js/realtimeproducts.js'></script>

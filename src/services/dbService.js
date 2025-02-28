@@ -98,6 +98,8 @@ const searchItems = async (payload) => {
 };
 
 module.exports = {
+  readDb,
+  writeDb,
   createItem,
   getItems,
   getItem,
