@@ -1,11 +1,18 @@
-const express = require('express');
-const router = express.Router();
-const productsController = require('../controllers/productsController');
+const { Router } = require('express');
+const ProductsController = require('../controllers/productsController.js');
+const Product = require('../entities/Product.js');
 
-router.post('/', productsController.createProduct);
-router.get('/', productsController.getProducts);
-router.get('/:id', productsController.getProduct);
-router.put('/:id', productsController.updateProduct);
-router.delete('/:id', productsController.deleteProduct);
+const productsRouter = Router();
 
-module.exports = router;
+productsRouter.post('/', ProductsController.createProduct);
+productsRouter.get('/', ProductsController.getProducts);
+productsRouter.get('/:id', ProductsController.getProduct);
+productsRouter.put('/:id', ProductsController.updateProduct);
+productsRouter.delete('/:id', ProductsController.deleteProduct);
+
+productsRouter.post('/restock', async (req, res) => {
+  await Product.restockAll();
+  res.redirect('/realtimeproducts');
+});
+
+module.exports = productsRouter;

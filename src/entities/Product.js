@@ -1,5 +1,13 @@
-const crypto = require('crypto');
-const dbService = require('../services/dbService');
+const { randomUUID } = require('crypto');
+const {
+  createItem,
+  getItems,
+  getItem,
+  updateItem,
+  deleteItem,
+  readDb,
+  writeDb,
+} = require('../services/dbService.js');
 
 const thumbnailsPlaceholder =
   'https://cardamomocatering.es/wp-content/uploads/woocommerce-placeholder.png';
@@ -18,17 +26,18 @@ class Product {
     stock,
   }) {
     // Describimos y asignamos las propiedades de la clase
-    this.id = id ?? crypto.randomUUID();
+    this.id = id ?? randomUUID();
     this.title = title; // string
 
     // Validamos que el precio sea un número y que no sea negativo
-    if (isNaN(price)) throw new Error('El precio debe ser un número');
+    if (price && isNaN(Number(price)))
+      throw new Error('El precio debe ser un número');
     if (price < 0) throw new Error('El precio no puede ser negativo');
-    this.price = price; // number
+    this.price = Number(price); // number
 
     this.description = description; //opcional - string
     this.code = code; // opcional - string
-    this.status = status?.toLowerCase() || 'active'; // string
+    this.status = status || true;
     this.category = category?.toLowerCase() || 'sin_categoria'; // string
 
     if (thumbnails && !Array.isArray(thumbnails))
@@ -40,7 +49,8 @@ class Product {
     ]; // opcional - [string] - deberia ser una url
 
     // Validamos que el stock sea un número y que no sea negativo
-    if (isNaN(stock)) throw new Error('El stock debe ser un número');
+    if (stock && isNaN(Number(stock)))
+      throw new Error('El stock debe ser un número');
     if (stock < 0) throw new Error('El stock no puede ser negativo');
     this.stock = Number(stock) || 0; // number
 
@@ -69,25 +79,30 @@ class Product {
   static async create(itemParams) {
     const product = new Product(itemParams).get();
 
-    await dbService.createItem({ item: product, dbName: 'products' });
+    await createItem({ item: product, dbName: 'products' });
     return product;
   }
 
   static getAll() {
-    return dbService.getItems('products');
+    return getItems('products');
   }
 
   static getById(id) {
-    return dbService.getItem({ id, dbName: 'products' });
+    return getItem({ id, dbName: 'products' });
   }
 
   static async update(product) {
-    await dbService.updateItem({ item: product, dbName: 'products' });
+    await updateItem({ item: product, dbName: 'products' });
     return product;
   }
 
   static delete(id) {
-    return dbService.deleteItem({ id, dbName: 'products' });
+    return deleteItem({ id, dbName: 'products' });
+  }
+
+  static async restockAll() {
+    const productsBackUp = readDb('products-back');
+    writeDb('products', productsBackUp);
   }
 }
 
