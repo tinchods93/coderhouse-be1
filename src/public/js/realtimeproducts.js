@@ -4,8 +4,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const socket = io();
 
   socket.on('products', (products) => {
-    console.log('ON PRODUCTS', products);
     productsGrid.innerHTML = '';
+    
     products.forEach((product) => {
       const productCard = document.createElement('div');
       productCard.classList.add('card');
