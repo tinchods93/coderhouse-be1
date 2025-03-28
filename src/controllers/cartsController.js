@@ -1,9 +1,9 @@
-const Carts = require('../entities/Carts.js');
+import Cart from '../entities/cart.js';
 
 class CartsController {
   static async createCart(req, res) {
     try {
-      const cart = await Carts.create(req.body);
+      const cart = await Cart.create(req.body);
       res.status(201).json(cart);
     } catch (error) {
       res.status(400).json({ error: error.message });
@@ -12,7 +12,7 @@ class CartsController {
 
   static async getCart(req, res) {
     try {
-      const cart = await Carts.get(req.params);
+      const cart = await Cart.get(req.params);
       if (!cart) {
         throw new Error('No se encontró el carrito');
       }
@@ -24,7 +24,7 @@ class CartsController {
 
   static async updateCart(req, res) {
     try {
-      const cart = await Carts.update(req.body);
+      const cart = await Cart.update(req.body);
       res.status(200).json(cart);
     } catch (error) {
       res.status(400).json({ error: error.message });
@@ -33,7 +33,7 @@ class CartsController {
 
   static async deleteCart(req, res) {
     try {
-      await Carts.delete(req.params);
+      await Cart.delete(req.params);
       res.status(204).end();
     } catch (error) {
       res.status(400).json({ error: error.message });
@@ -42,7 +42,7 @@ class CartsController {
 
   static async addProductToCart(req, res) {
     try {
-      const cart = await Carts.addProduct({
+      const cart = await Cart.addProduct({
         id: req.params.id,
         product: req.body,
       });
@@ -55,7 +55,7 @@ class CartsController {
   static async deleteProductFromCart(req, res) {
     try {
       // obtener el id del producto desde un query param
-      const cart = await Carts.removeProductFromCart({
+      const cart = await Cart.removeProductFromCart({
         id: req.params.id,
         product: {
           id: req.params.productId,
@@ -69,4 +69,4 @@ class CartsController {
   }
 }
 
-module.exports = CartsController;
+export default CartsController;

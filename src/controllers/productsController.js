@@ -1,9 +1,9 @@
-const Product = require('../entities/Product.js');
+import ProductRepository from '../dao/repositories/productRepository.js';
 
 class ProductsController {
   static async createProduct(req, res) {
     try {
-      const product = await Product.create(req.body);
+      const product = await ProductRepository.create(req.body);
       res.status(201).json(product);
     } catch (error) {
       res.status(400).json({ error: error.message });
@@ -12,10 +12,8 @@ class ProductsController {
 
   static async getProducts(req, res) {
     try {
-      const products = await Product.getAll();
-      if (!products?.length) {
-        throw new Error('No hay productos cargados');
-      }
+      const products = await ProductRepository.getAll({ query: req.query });
+
       res.status(200).json(products);
     } catch (error) {
       res.status(404).json({ error: error.message });
@@ -24,7 +22,7 @@ class ProductsController {
 
   static async getProduct(req, res) {
     try {
-      const product = await Product.getById(req.params.id);
+      const product = await ProductRepository.getById(req.params.id);
       if (!product) {
         throw new Error('No se encontró el producto');
       }
@@ -36,7 +34,7 @@ class ProductsController {
 
   static async updateProduct(req, res) {
     try {
-      const product = await Product.update({
+      const product = await ProductRepository.update({
         ...req.body,
         id: req.params.id,
       });
@@ -48,12 +46,22 @@ class ProductsController {
 
   static async deleteProduct(req, res) {
     try {
-      await Product.delete(req.params.id);
+      await ProductRepository.delete(req.params.id);
       res.status(204).end();
     } catch (error) {
       res.status(400).json({ error: error.message });
     }
   }
+
+  static async restockAll(req, res) {
+    try {
+      await ProductRepository.restockAll();
+      res.redirect('/realtimeproducts');
+    } catch (error) {
+      console.error(error);
+      res.status(500).end();
+    }
+  }
 }
 
-module.exports = ProductsController;
+export default ProductsController;
