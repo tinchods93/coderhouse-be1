@@ -1,10 +1,5 @@
-const { randomUUID } = require('crypto');
-const {
-  createItem,
-  getItem,
-  updateItem,
-  deleteItem,
-} = require('../services/dbService.js');
+import { randomUUID } from 'crypto';
+import DbService from '../services/dbService.js';
 
 class Cart {
   constructor({ id, products }) {
@@ -24,21 +19,21 @@ class Cart {
   static async create(itemParams) {
     const cart = new Cart(itemParams).get();
 
-    await createItem({ item: cart, dbName: 'carts' });
+    await DbService.createItem({ item: cart, dbName: 'carts' });
     return cart;
   }
 
   static async get({ id }) {
-    return getItem({ id, dbName: 'carts' });
+    return DbService.getItem({ id, dbName: 'carts' });
   }
 
   static async update(cart) {
-    await updateItem({ item: cart, dbName: 'carts' });
+    await DbService.updateItem({ item: cart, dbName: 'carts' });
     return cart;
   }
 
   static async delete({ id }) {
-    await deleteItem({ id, dbName: 'carts' });
+    await DbService.deleteItem({ id, dbName: 'carts' });
   }
 
   // manejo de productos en el carrito
@@ -79,4 +74,4 @@ class Cart {
   }
 }
 
-module.exports = Cart;
+export default Cart;

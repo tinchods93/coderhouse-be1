@@ -1,5 +1,4 @@
-const { Router } = require('express');
-const Product = require('../entities/Product');
+import { Router } from 'express';
 
 const viewsRouter = Router();
 
@@ -17,4 +16,10 @@ viewsRouter.get('/addProduct', (req, res) => {
   res.render('addProduct');
 });
 
-module.exports = viewsRouter;
+viewsRouter.get('/about', (req, res) => {
+  res.render('about',{
+    title: '¡Guía de Uso!'
+  });
+});
+
+export default viewsRouter;

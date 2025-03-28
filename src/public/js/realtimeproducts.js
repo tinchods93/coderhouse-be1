@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
   socket.on('products', (products) => {
     productsGrid.innerHTML = '';
     
-    products.forEach((product) => {
+    products.payload.forEach((product) => {
       const productCard = document.createElement('div');
       productCard.classList.add('card');
       productCard.innerHTML = `
@@ -27,6 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       productCard.querySelector('button').addEventListener('click', (event) => {
         event.preventDefault();
+        console.log('MARTIN_LOG=> productCard.querySelector => button => click => product', product);
         socket.emit('deleteProduct', product.id);
         restockForm.style.display = 'block';
       });

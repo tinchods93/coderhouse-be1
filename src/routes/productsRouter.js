@@ -1,6 +1,5 @@
-const { Router } = require('express');
-const ProductsController = require('../controllers/productsController.js');
-const Product = require('../entities/Product.js');
+import { Router } from 'express';
+import ProductsController from '../controllers/productsController.js';
 
 const productsRouter = Router();
 
@@ -11,8 +10,7 @@ productsRouter.put('/:id', ProductsController.updateProduct);
 productsRouter.delete('/:id', ProductsController.deleteProduct);
 
 productsRouter.post('/restock', async (req, res) => {
-  await Product.restockAll();
-  res.redirect('/realtimeproducts');
+  await ProductsController.restockAll(req, res);
 });
 
-module.exports = productsRouter;
+export default productsRouter;

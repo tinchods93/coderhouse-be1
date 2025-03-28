@@ -2,6 +2,7 @@
   "name": "coderhouse-be1",
   "version": "1.0.0",
   "description": "Proyecto creado para el curso de Backend 1 de Coderhouse",
+  "type": "module",
   "main": "src/app.js",
   "scripts": {
     "start": "node ./src/app.js",
@@ -24,6 +25,8 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "express-handlebars": "^7.1.3",
+    "mongoose": "^8.12.1",
+    "mongoose-paginate-v2": "^1.9.0",
     "socket.io": "^4.7.5"
   },
   "devDependencies": {

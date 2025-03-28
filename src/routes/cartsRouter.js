@@ -1,5 +1,5 @@
-const { Router } = require('express');
-const CartsController = require('../controllers/cartsController.js');
+import { Router } from 'express';
+import CartsController from '../controllers/cartsController.js';
 
 const cartsRouter = Router();
 
@@ -15,4 +15,4 @@ cartsRouter.post(
   CartsController.deleteProductFromCart
 );
 
-module.exports = cartsRouter;
+export default cartsRouter;
